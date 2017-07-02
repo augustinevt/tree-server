@@ -1,13 +1,12 @@
 const mongo = require('./mongo');
 const express = require('express')
-const app = express()
+const app = express();
 
-// const testNodes = [
-//   {name: 'Food', path: '', parent: ''},
-//   {name: 'Healthy', path: 'Food', parent: 'Food'},
-//   {name: 'Soylent', path: 'Food,Healthy', parent: 'Healthy'},
-//   {name: 'Rice', path: 'Food,Healthy', parent: 'Healthy'}
-// ]
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 const makeHierarchy = (array) => {
   const reference = {};
@@ -51,6 +50,7 @@ app.get('/', async function (req, res) {
 
 mongo.connectToServer((err)=> {
   console.log(err)
+
   app.listen(8000, function () {
     console.log('Example app listening on port 3000!')
   })
