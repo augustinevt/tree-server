@@ -1,4 +1,5 @@
 const mongo = require('./mongo');
+const makeHierarchy = require('./hierarchy')
 const express = require('express')
 const app = express();
 
@@ -8,41 +9,15 @@ app.use(function(req, res, next) {
   next();
 });
 
-const makeHierarchy = (array) => {
-  const reference = {};
-  array.forEach((node) => {
 
-    if(!reference[node.name]) {
-      node.children = [];
-      reference[node.name] = node
-    }
-
-    if( typeof reference[node.name].name === 'undefined') {
-      const children = reference[node.name].children;
-      reference[node.name] = node;
-      reference[node.name].children = children;
-    }
-
-    const parent = node.parent ? node.parent : 'root';
-
-    if (!reference[parent]) {
-      reference[parent] = { children: [] }
-    }
-
-    reference[parent].children.push(node);
-  });
-
-  return reference['root'];
-
-}
-
-app.get('/', async function (req, res) {
-  console.log('this has been got');
+app.get('/tree/:tree', async function (req, res) {
+  const slug = req.params.tree;
+console.log(slug)
   const db = mongo.getDB();
   try {
-    const foo = await db.collection('test').find().toArray();
-    const hierarchy = makeHierarchy(foo)
-    res.json({Choo: hierarchy});
+    const data = await db.collection('mvp').find({ tree: slug }).toArray();
+    const hierarchy = makeHierarchy(data)
+    res.json(hierarchy);
   } catch (e) {
     console.log('this did not work', e);
   }
@@ -55,5 +30,3 @@ mongo.connectToServer((err)=> {
     console.log('Example app listening on port 3000!')
   })
 })
-
-// console.log(JSON.stringify(makeHierarchy(testNodes)));
