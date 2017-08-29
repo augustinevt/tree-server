@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID
-const url = 'mongodb://admin:cows@ds141082.mlab.com:41082/itsatree';
+const url = 'mongodb://august:twinkies@ds157873.mlab.com:57873/eoa_tree';
 var _db;
 
 module.exports = {
